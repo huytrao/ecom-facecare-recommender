@@ -4,3 +4,16 @@ env
 
 # data
 data/*
+images/*
+static/image/*
+
+# logs
+logs/*
+
+# models
+models/*
+
+# embeddings 
+embeddings/vie_bi_encode_embedding.npy
+
+__pycache__/*

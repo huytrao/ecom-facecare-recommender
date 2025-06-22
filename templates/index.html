@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Đề xuất Sản phẩm Chăm sóc Da mặt</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Wrap all content except footer in a content-wrapper div -->
+<div class="content-wrapper">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Hệ thống Đề xuất Sản phẩm Sữa rửa mặt Shopee</a>
+      <div class="navbar-nav ml-auto">
+        <a class="nav-link mr-3" href="/"><i class="fas fa-home"></i> Trang chủ</a>
+        <a class="nav-link" href="#" id="settingsLink"><i class="fas fa-cog"></i> Cài đặt</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Search bar -->
+  <div class="container search-container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm..." aria-label="Search products" id="searchInput">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="searchButton">
+              <i class="fas fa-search"></i> Tìm kiếm
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Khung đề xuất UserID-->
+  <div class="container recommendation-container">
+    <h4 class="text-center mb-4">Đề xuất sản phẩm dựa trên User ID</h4>
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <form action="/recommend/content_based" method="post">
+          <div class="input-group mb-3">
+            <input type="number" name="user_id" id="userIdInput" class="form-control" placeholder="Nhập User ID..." 
+                   aria-label="User ID" required>
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="submit" id="recommendButton">
+                <i class="fas fa-lightbulb"></i> Đề xuất
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hiển thị sản phẩm đề xuất -->
+  <div class="container mt-5" id="popularProducts">
+  <h2 class="text-center mb-4">Sản phẩm Phổ biến</h2>
+  <div class="row mt-4" id="popularProductsContainer">
+    <!-- Loading spinner -->
+    <div class="col-12 text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <p>Đang tải sản phẩm phổ biến...</p>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" role="dialog" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="settingsModalLabel">Cài đặt</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="themeSelect">Chọn giao diện:</label>
+            <select class="form-control" id="themeSelect">
+              <option value="light">Sáng</option>
+              <option value="dark">Tối</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Thu phóng:</label>
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-outline-primary" id="zoomOut">-</button>
+              <button type="button" class="btn btn-outline-primary" id="zoomIn">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-primary" id="applyTheme">Áp dụng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--footer-->
+<footer class="footer bg-dark text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h5>About me:</h5>
+        <p>Hệ thống đề xuất sản phẩm chăm sóc da mặt thông minh dựa trên công nghệ học máy.</p>
+      </div>
+      <div class="col-md-4">
+        <h5>Liên kết nhanh</h5>
+        <ul class="list-unstyled">
+          <li><a href="/" class="text-white">Trang chủ</a></li>
+          <li><a href="#" class="text-white">Sản phẩm</a></li>
+          <li><a href="#" class="text-white">Liên hệ</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h5>Liên hệ</h5>
+        <address>
+          <i class="fas fa-envelope"></i> Email: chuanghira@gmail.com<br>
+          <i class="fas fa-phone"></i> Điện thoại: +84 123 456 789
+        </address>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <hr class="bg-light">
+        <p class="text-center">© 2024 Hệ thống Đề xuất Sản phẩm Chăm sóc Da mặt. All Rights Reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  // Xử lý nút cài đặt
+  document.getElementById('settingsLink').addEventListener('click', function() {
+    $('#settingsModal').modal('show');
+  });
+
+  // Xử lý áp dụng giao diện
+  document.getElementById('applyTheme').addEventListener('click', function() {
+    var selectedTheme = document.querySelector('input[name="theme"]:checked').value;
+    
+    if (selectedTheme === 'black') {
+      // Body and general text
+      document.body.style.backgroundColor = '#121212';
+      document.body.style.color = 'white';
+      
+      // Navbar customization for dark theme
+      document.querySelectorAll('.navbar').forEach(function(el) {
+        el.classList.remove('navbar-light', 'bg-light');
+        el.classList.add('navbar-dark', 'bg-dark');
+      });
+      
+      // Make navbar links visible
+      document.querySelectorAll('.navbar-nav .nav-link').forEach(function(el) {
+        el.style.color = 'rgba(255,255,255,0.8)';
+      });
+      document.querySelectorAll('.navbar-brand').forEach(function(el) {
+        el.style.color = 'white';
+      });
+      
+      // Cards and containers
+      document.querySelectorAll('.card, .recommendation-container').forEach(function(el) {
+        el.style.backgroundColor = '#1f1f1f';
+        el.style.color = 'white';
+      });
+      
+      // Ensure modal text is visible in dark theme
+      document.querySelectorAll('.modal-content').forEach(function(el) {
+        el.style.backgroundColor = '#1f1f1f';
+        el.style.color = 'white';
+      });
+      
+      // Make sure form labels are visible
+      document.querySelectorAll('.modal-content .form-check-label').forEach(function(el) {
+        el.style.color = 'white';
+      });
+      
+      // Make modal headers visible
+      document.querySelectorAll('.modal-header, .modal-footer').forEach(function(el) {
+        el.style.backgroundColor = '#2d2d2d';
+      });
+    } else {
+      // Body and general text
+      document.body.style.backgroundColor = '#f8f9fa';
+      document.body.style.color = 'black';
+      
+      // Navbar customization for light theme
+      document.querySelectorAll('.navbar').forEach(function(el) {
+        el.classList.remove('navbar-dark', 'bg-dark');
+        el.classList.add('navbar-light', 'bg-light');
+      });
+      
+      // Reset navbar links
+      document.querySelectorAll('.navbar-nav .nav-link').forEach(function(el) {
+        el.style.color = '';
+      });
+      document.querySelectorAll('.navbar-brand').forEach(function(el) {
+        el.style.color = '';
+      });
+      
+      // Cards and containers
+      document.querySelectorAll('.card, .recommendation-container').forEach(function(el) {
+        el.style.backgroundColor = '#fff';
+        el.style.color = 'black';
+      });
+      
+      // Reset modal colors for light theme
+      document.querySelectorAll('.modal-content').forEach(function(el) {
+        el.style.backgroundColor = '#fff';
+        el.style.color = 'black';
+      });
+      
+      // Reset form labels
+      document.querySelectorAll('.modal-content .form-check-label').forEach(function(el) {
+        el.style.color = 'black';
+      });
+      
+      // Reset modal headers
+      document.querySelectorAll('.modal-header, .modal-footer').forEach(function(el) {
+        el.style.backgroundColor = '#f8f9fa';
+      });
+    }
+    
+    $('#settingsModal').modal('hide');
+  });
+
+  // Xử lý thu phóng
+  document.getElementById('zoomIn').addEventListener('click', function() {
+    document.body.style.zoom = "110%";
+  });
+
+  document.getElementById('zoomOut').addEventListener('click', function() {
+    document.body.style.zoom = "100%";
+  });
+
+  // Xử lý nút tìm kiếm
+  document.getElementById('searchButton').addEventListener('click', function() {
+    const searchTerm = document.getElementById('searchInput').value;
+    // Add search functionality here
+    console.log('Searching for:', searchTerm);
+  });
+
+  // Handle recommendation form submission with POST method
+  document.getElementById('recommendForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+    
+    const userId = document.getElementById('userIdInput').value;
+    
+    if (!userId) {
+      alert('Vui lòng nhập User ID');
+      return;
+    }
+
+    // Show loading indicator
+    const recommendButton = document.getElementById('recommendButton');
+    const originalText = recommendButton.innerHTML;
+    recommendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+    recommendButton.disabled = true;
+
+    // Create form data for POST request
+    const formData = new FormData();
+    formData.append('user_id', userId);
+
+    // Make POST request to content-based recommendation endpoint
+    fetch('/recommend/content_based', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.open();
+      document.write(html);
+      document.close();
+    });
+  });
+
+  // Function to display recommended products
+  function displayRecommendedProducts(products, basedOnProduct) {
+      const container = document.getElementById('recommendedProductsContainer');
+      container.innerHTML = '';
+      
+      // Add "Based on" information
+      if (basedOnProduct) {
+          container.innerHTML = `
+              <div class="col-12 mb-3">
+                  <div class="alert alert-info">
+                      Đề xuất dựa trên sản phẩm bạn đã mua gần đây: <strong>${basedOnProduct}</strong>
+                  </div>
+              </div>
+          `;
+      }
+      
+      // Add product cards
+      products.forEach(product => {
+          const productCard = document.createElement('div');
+          productCard.className = 'col-md-4 mb-4';
+          
+          // Get image path, with fallback to placeholder
+          const imagePath = product.image_path ? 
+              (product.image_path.startsWith('http') ? product.image_path : `/static/image/${product.image_path}`) : 
+              '/static/image/placeholder.jpg';
+          
+          productCard.innerHTML = `
+              <div class="card h-100">
+                  <img src="${imagePath}" class="card-img-top" alt="${product.product_name}" 
+                      onerror="this.src='/static/image/placeholder.jpg'" style="height: 200px; object-fit: contain;">
+                  <div class="card-body">
+                      <h5 class="card-title">${product.product_name || 'Unknown Product'}</h5>
+                      <p class="card-text">
+                          <strong>Thương hiệu:</strong> ${product.brand || 'N/A'}<br>
+                          <strong>Giá:</strong> ${product.price || 'N/A'} VNĐ<br>
+                          <strong>Đánh giá:</strong> ${product.avg_star || '0'} (${product.num_rating || '0'} đánh giá)<br>
+                          <strong>Loại:</strong> ${product.type || 'Chăm sóc da'}<br>
+                          <strong>Loại da:</strong> ${product.skin_kind || 'Mọi loại da'}
+                      </p>
+                  </div>
+                  <div class="card-footer">
+                      <button class="btn btn-primary btn-sm">Thêm vào giỏ</button>
+                      <button class="btn btn-outline-secondary btn-sm">Chi tiết</button>
+                  </div>
+              </div>
+          `;
+          
+          container.appendChild(productCard);
+      });
+  }
+</script>
+
+<script>
+  // Function to fetch popular products from API
+  function fetchPopularProducts() {
+    fetch('/recommend/popular?num=9')
+      .then(response => response.json())
+      .then(data => {
+        displayPopularProducts(data.products);
+      })
+      .catch(error => {
+        console.error('Error fetching popular products:', error);
+        document.getElementById('popularProductsContainer').innerHTML = 
+          '<div class="col-12 text-center">Không thể tải sản phẩm. Vui lòng thử lại sau.</div>';
+      });
+  }
+
+  // Function to display popular products
+  function displayPopularProducts(products) {
+    const container = document.getElementById('popularProductsContainer');
+    container.innerHTML = ''; // Clear loading spinner
+    
+    products.forEach(product => {
+      const productCard = document.createElement('div');
+      productCard.className = 'col-md-4 mb-4';
+      
+      // Get image path, with fallback to placeholder
+      const imagePath = product.image_path ? 
+        (product.image_path.startsWith('http') ? product.image_path : `/static/image/${product.image_path}`) : 
+        '/static/image/placeholder.jpg';
+      
+      productCard.innerHTML = `
+        <div class="card h-100">
+          <img src="${imagePath}" class="card-img-top" alt="${product.product_name}" 
+               onerror="this.src='/static/image/placeholder.jpg'" style="height: 200px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">${product.product_name || 'Unknown Product'}</h5>
+            <p class="card-text">
+              <strong>Thương hiệu:</strong> ${product.brand || 'N/A'}<br>
+              <strong>Giá:</strong> ${product.price || 'N/A'} VNĐ<br>
+              <strong>Đánh giá:</strong> ${product.avg_star || '0'} (${product.num_rating || '0'} đánh giá)<br>
+              <strong>Loại:</strong> ${product.type || 'Chăm sóc da'}<br>
+              <strong>Loại da:</strong> ${product.skin_kind || 'Mọi loại da'}
+            </p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-sm">Thêm vào giỏ</button>
+            <button class="btn btn-outline-secondary btn-sm">Chi tiết</button>
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(productCard);
+    });
+  }
+
+  // Load popular products when the page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchPopularProducts();
+  });
+</script>
+
+</body>
+</html>

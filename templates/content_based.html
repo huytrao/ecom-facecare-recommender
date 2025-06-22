@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề xuất sản phẩm cho User ID: {{ user_id }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Wrap all content except footer in a content-wrapper div -->
+<div class="content-wrapper">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Hệ thống Đề xuất Sản phẩm Sữa rửa mặt Shopee</a>
+      <div class="navbar-nav ml-auto">
+        <a class="nav-link mr-3" href="/"><i class="fas fa-home"></i> Trang chủ</a>
+        <!-- <a class="nav-link" href="#" id="settingsLink"><i class="fas fa-cog"></i> Cài đặt</a> -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- Recommendation Results -->
+  <div class="container mt-5" id="recommendationResults">
+    <h2 class="text-center mb-4">Sản phẩm đề xuất cho User ID: {{ user_id }}</h2>
+
+    {% if error %}
+    <div class="alert alert-danger text-center">
+      <h4>Lỗi</h4>
+      <p>{{ error }}</p>
+    </div>
+    {% elif message %}
+    <div class="alert alert-info text-center">
+      <h4>Thông báo</h4>
+      <p>{{ message }}</p>
+    </div>
+    {% endif %}
+
+    {% if products and based_on_product %}
+    <div class="alert alert-info">
+      <p class="mb-0">Đề xuất dựa trên sản phẩm bạn đã mua gần đây: <strong>{{ based_on_product.product_name or 'Không rõ sản phẩm' }}</strong> (ID: {{ based_on_product.product_id }})</p>
+    </div>
+
+    <div class="row mt-4" id="recommendedProductsContainer">
+      {% for product in products %}
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          {% set image_path = product.image_path %}
+          {% if image_path and image_path.startswith('http') %}
+            {% set image_src = image_path %}
+          {% elif image_path %}
+            {% set image_src = url_for('static', path='image/' + image_path.split('/')[-1]) %}
+          {% else %}
+            {% set image_src = url_for('static', path='image/placeholder.jpg') %}
+          {% endif %}
+          <img src="{{ image_src }}" class="card-img-top" alt="{{ product.product_name or 'Sản phẩm' }}" style="height: 200px; object-fit: contain;" onerror="this.onerror=null;this.src='{{ url_for('static', path='image/placeholder.jpg') }}';">
+          <div class="card-body">
+            <h5 class="card-title">{{ product.product_name or 'Không có tên' }}</h5>
+            <p class="card-text">
+              <strong>Thương hiệu:</strong> {{ product.brand or 'N/A' }}<br>
+              <strong>Giá:</strong> {{ product.price | float | round(0) | int | format(group_separator='.') if product.price else 'N/A' }} VNĐ<br>
+              <strong>Đánh giá:</strong> {{ product.avg_star or 'N/A' }} ({{ product.num_rating or 0 }} đánh giá)<br>
+              <strong>Loại da:</strong> {{ product.skin_kind or 'N/A' }}
+            </p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-sm">Thêm vào giỏ</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% elif show_popular %}
+    <!-- Popular Products Container -->
+    <div class="container mt-5" id="popularProducts">
+      <h3 class="text-center mb-4">Sản phẩm Phổ biến</h3>
+      <div class="row mt-4" id="popularProductsContainer">
+        <!-- Loading spinner -->
+        <div class="col-12 text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <p>Đang tải sản phẩm phổ biến...</p>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center">
+      <p>Không tìm thấy sản phẩm đề xuất phù hợp.</p>
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <a href="/" class="btn btn-outline-primary"><i class="fas fa-arrow-left"></i> Quay lại Trang chủ</a>
+    </div>
+  </div>
+</div>
+
+<!--footer-->
+<footer class="footer bg-dark text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h5>About me:</h5>
+        <p>Hệ thống đề xuất sản phẩm chăm sóc da mặt thông minh dựa trên công nghệ học máy.</p>
+      </div>
+      <div class="col-md-4">
+        <h5>Liên kết nhanh</h5>
+        <ul class="list-unstyled">
+          <li><a href="/" class="text-white">Trang chủ</a></li>
+          <li><a href="#" class="text-white">Sản phẩm</a></li>
+          <li><a href="#" class="text-white">Liên hệ</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h5>Liên hệ</h5>
+        <address>
+          <i class="fas fa-envelope"></i> Email: chuanghira@gmail.com<br>
+          <i class="fas fa-phone"></i> Điện thoại: +84 123 456 789
+        </address>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <hr class="bg-light">
+        <p class="text-center">© 2024 Hệ thống Đề xuất Sản phẩm Chăm sóc Da mặt. All Rights Reserved.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% if show_popular %}
+<script>
+  // Function to fetch popular products from API
+  function fetchPopularProducts() {
+    fetch('/recommend/popular?num=15')
+      .then(response => response.json())
+      .then(data => {
+        displayPopularProducts(data.products);
+      })
+      .catch(error => {
+        console.error('Error fetching popular products:', error);
+        document.getElementById('popularProductsContainer').innerHTML = 
+          '<div class="col-12 text-center">Không thể tải sản phẩm. Vui lòng thử lại sau.</div>';
+      });
+  }
+
+  // Function to display popular products
+  function displayPopularProducts(products) {
+    const container = document.getElementById('popularProductsContainer');
+    container.innerHTML = ''; // Clear loading spinner
+    
+    products.forEach(product => {
+      const productCard = document.createElement('div');
+      productCard.className = 'col-md-4 mb-4';
+      
+      // Get image path, with fallback to placeholder
+      const imagePath = product.image_path ? 
+        (product.image_path.startsWith('http') ? product.image_path : `/static/image/${product.image_path}`) : 
+        '/static/image/placeholder.jpg';
+      
+      productCard.innerHTML = `
+        <div class="card h-100">
+          <img src="${imagePath}" class="card-img-top" alt="${product.product_name}" 
+               onerror="this.src='/static/image/placeholder.jpg'" style="height: 200px; object-fit: contain;">
+          <div class="card-body">
+            <h5 class="card-title">${product.product_name || 'Unknown Product'}</h5>
+            <p class="card-text">
+              <strong>Thương hiệu:</strong> ${product.brand || 'N/A'}<br>
+              <strong>Giá:</strong> ${product.price || 'N/A'} VNĐ<br>
+              <strong>Đánh giá:</strong> ${product.avg_star || '0'} (${product.num_rating || '0'} đánh giá)<br>
+              <strong>Loại:</strong> ${product.type || 'Chăm sóc da'}<br>
+              <strong>Loại da:</strong> ${product.skin_kind || 'Mọi loại da'}
+            </p>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-primary btn-sm">Thêm vào giỏ</button>
+            <button class="btn btn-outline-secondary btn-sm">Chi tiết</button>
+          </div>
+        </div>
+      `;
+      
+      container.appendChild(productCard);
+    });
+  }
+
+  // Load popular products when the page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchPopularProducts();
+  });
+</script>
+{% endif %}
+
+</body>
+</html>
