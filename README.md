@@ -20,24 +20,29 @@ A Content-based recommendation system for facecare products in an e-commerce set
 │   ├── data_product.csv
 │   ├── data_purchase.csv
 │   ├── data_reviews_purchase.csv
-│   └── top_brand_products.csv
+│   ├── mf_predictions.npz
+│   ├── top_brand_products.csv
+│   └── user_item_matrix.csv
 ├── Dockerfile
 ├── embeddings
 │   ├── vie_bi_encode_embedding.npy
 │   └── vietnamese_embedding.npy
 ├── images
 │   └── image.txt
-├── ingestion_elastic_search.py
 ├── notebooks
 │   ├── 1_preprocess_data.ipynb
 │   ├── 2_embedding_content.ipynb
-│   └── 3_content_based_with_popular_score.ipynb
+│   ├── 3_content_based_with_popular_score.ipynb
+│   └── 4_matrix_factorization.ipynb
+├── __pycache__
+│   └── app.cpython-39.pyc
 ├── README.md
 ├── requirements.txt
 ├── static
 │   ├── image
 │   └── style.css
 └── templates
+    ├── content_based.html
     └── index.html
 ```
 
@@ -65,3 +70,6 @@ A Content-based recommendation system for facecare products in an e-commerce set
     ```bash
     uvicorn app:app --host 0.0.0.0 --port 8080
     ```
+
+## Data
+You can find the datasets in Kaggle, link: [![Kaggle](https://img.shields.io/badge/Kaggle-Open%20in%20Kaggle-blue?logo=kaggle)](https://www.kaggle.com/datasets/danielway17/face-clean-ecomer)
