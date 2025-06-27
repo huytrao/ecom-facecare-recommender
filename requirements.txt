@@ -15,10 +15,8 @@ black==25.1.0
 nbqa==1.9.1
 elastic-transport==8.4.0
 elasticsearch==8.6.1
-jsonschema==4.17.3
-matplotlib==3.6.3
-matplotlib-inline==0.1.6
 fastapi[standard]==0.115.12
 uvicorn[standard]==0.34.3
 loguru==0.7.3
 python-multipart==0.0.20
+pydantic==2.5.0

@@ -134,7 +134,7 @@
     <div class="row mt-3">
       <div class="col-md-12">
         <hr class="bg-light">
-        <p class="text-center">© 2024 Hệ thống Đề xuất Sản phẩm Chăm sóc Da mặt. All Rights Reserved.</p>
+        <p class="text-center">© 2025 Hệ thống Đề xuất Sản phẩm Chăm sóc Da mặt. All Rights Reserved.</p>
       </div>
     </div>
   </div>
@@ -398,6 +398,26 @@
   // Load popular products when the page loads
   document.addEventListener('DOMContentLoaded', function() {
     fetchPopularProducts();
+    
+    // Handle search functionality
+    function performSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (query) {
+        window.location.href = `/search?query=${encodeURIComponent(query)}`;
+      }
+    }
+    
+    // Search button click
+    document.getElementById('searchButton').addEventListener('click', function() {
+      performSearch();
+    });
+    
+    // Enter key press in search input
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.which === 13 || e.keyCode === 13) { // Enter key
+        performSearch();
+      }
+    });
   });
 </script>
 
