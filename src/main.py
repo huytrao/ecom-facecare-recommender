@@ -49,7 +49,7 @@ def create_app() -> FastAPI:
     app.include_router(router)
 
     # Add exception handlers
-    app.add_exception_handler(RecommendationException, recommendation_exception_handler)
+    app.add_exception_handler(RecommendationException, recommendation_exception_handler) # type: ignore
     app.add_exception_handler(Exception, general_exception_handler)
 
     # Add startup event

@@ -110,17 +110,11 @@ pip install -r requirements.txt
 
 ### 4. Running the Application
 
-#### Option A: Using the legacy entry point (backward compatible)
 ```bash
 python app.py
 ```
 
-#### Option B: Using uvicorn directly
-```bash
-uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-### 4. API Documentation
+### 5. API Documentation
 Once running, visit:
 - Application: http://localhost:8000
 - API Documentation: http://localhost:8000/docs
