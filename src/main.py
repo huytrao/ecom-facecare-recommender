@@ -49,7 +49,7 @@ def create_app() -> FastAPI:
     app.include_router(router)
 
     # Add exception handlers
-    app.add_exception_handler(RecommendationException, recommendation_exception_handler) # type: ignore
+    app.add_exception_handler(RecommendationException, recommendation_exception_handler)  # type: ignore
     app.add_exception_handler(Exception, general_exception_handler)
 
     # Add startup event
@@ -73,6 +73,15 @@ def create_app() -> FastAPI:
             _ = data_service.vietnamese_embedding
             _ = data_service.cosine_similarity_matrix
             _ = data_service.product_indices
+
+            # Try to load prediction matrix (optional)
+            try:
+                _ = data_service.prediction_matrix
+                _ = data_service.train_matrix
+                logger.info("Prediction matrix loaded successfully")
+            except Exception as e:
+                logger.warning(f"Could not load prediction matrix: {e}")
+                logger.info("System will work without collaborative filtering")
 
             logger.info("Data services loaded successfully")
         except Exception as e:

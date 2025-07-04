@@ -78,13 +78,13 @@ async def get_popular_products(num: Optional[int] = 10):
 
 
 @router.post(
-    "/recommend/content_based",
-    summary="Get Content-Based Product Recommendations",
+    "/recommend/hybrid",
+    summary="Get Hybrid Product Recommendations",
     response_class=HTMLResponse,
 )
-async def get_content_based_recommendations(request: Request, user_id: int = Form(...)):
+async def get_hybrid_recommendations(request: Request, user_id: int = Form(...)):
     """
-    Get content-based product recommendations.
+    Get hybrid product recommendations combining content-based and collaborative filtering.
 
     Args:
         request: FastAPI request object
@@ -100,64 +100,51 @@ async def get_content_based_recommendations(request: Request, user_id: int = For
                 {"request": request, "error": "User ID is required"},
             )
 
-        logger.info(f"Generating content-based recommendations for user {user_id}")
+        logger.info(f"Generating hybrid recommendations for user {user_id}")
 
-        # Get recommendations
-        recommendations = recommendation_service.get_content_based_recommendations(
-            user_id=user_id,
-            num_products=settings.recommendation.default_num_recommendations,
+        # Get hybrid recommendations
+        recommendation_response = recommendation_service.get_hybrid_recommendations(
+            user_id, settings.recommendation.default_num_recommendations
         )
+
+        # Convert products to dict for template
+        products_dict = [
+            product.model_dump() for product in recommendation_response.products
+        ]
 
         # Prepare template context
         context = {
             "request": request,
+            "products": products_dict,
             "user_id": user_id,
+            "recommendation_type": "hybrid",
+            "message": recommendation_response.message,
         }
 
-        if recommendations.message:
-            # No purchase history - show popular products
-            context.update(
-                {
-                    "show_popular": True,
-                    "message": recommendations.message,
-                }
+        # Add base product if available
+        if recommendation_response.based_on_product:
+            context["based_on_product"] = (
+                recommendation_response.based_on_product.model_dump()
             )
-        else:
-            # Regular recommendations
-            products_dict = [
-                product.model_dump() for product in recommendations.products
-            ]
-            base_product_dict = None
-            if recommendations.based_on_product:
-                base_product_dict = recommendations.based_on_product.model_dump()
 
-            context.update(
-                {
-                    "products": products_dict,
-                    "based_on_product": base_product_dict,
-                }
-            )
+        # Check if we're showing popular products
+        if (
+            recommendation_response.message
+            and "popular products" in recommendation_response.message.lower()
+        ):
+            context["show_popular"] = True
+
+        logger.debug(f"Hybrid recommendations generated: {len(products_dict)} products")
 
         return templates.TemplateResponse("content_based.html", context)
 
-    except ValueError as e:
-        logger.error(f"Validation error: {str(e)}")
-        return templates.TemplateResponse(
-            "content_based.html",
-            {
-                "request": request,
-                "error": str(e),
-                "user_id": user_id,
-            },
-        )
     except Exception as e:
-        logger.error(f"Error generating content-based recommendations: {str(e)}")
+        logger.error(f"Error generating hybrid recommendations: {str(e)}")
         return templates.TemplateResponse(
             "content_based.html",
             {
                 "request": request,
                 "error": f"Failed to generate recommendations: {str(e)}",
-                "user_id": user_id,
             },
         )
 
