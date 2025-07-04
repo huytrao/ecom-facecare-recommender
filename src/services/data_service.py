@@ -19,6 +19,8 @@ class DataService:
         self._vietnamese_embedding: Optional[np.ndarray] = None
         self._cosine_similarity_matrix: Optional[np.ndarray] = None
         self._product_indices: Optional[pd.Series] = None
+        self._prediction_matrix: Optional[pd.DataFrame] = None
+        self._train_matrix: Optional[pd.DataFrame] = None
 
     @property
     def popular_products(self) -> pd.DataFrame:
@@ -67,6 +69,20 @@ class DataService:
             self._create_product_indices()
         assert self._product_indices is not None
         return self._product_indices
+
+    @property
+    def prediction_matrix(self) -> Optional[pd.DataFrame]:
+        """Get prediction matrix for collaborative filtering."""
+        if self._prediction_matrix is None:
+            self._load_prediction_matrix()
+        return self._prediction_matrix
+
+    @property
+    def train_matrix(self) -> Optional[pd.DataFrame]:
+        """Get train matrix for collaborative filtering."""
+        if self._train_matrix is None:
+            self._load_prediction_matrix()
+        return self._train_matrix
 
     def _load_popular_products(self) -> None:
         """Load popular products data."""
@@ -140,6 +156,32 @@ class DataService:
             logger.error(f"Failed to create product indices: {e}")
             raise
 
+    def _load_prediction_matrix(self) -> None:
+        """Load prediction matrix for collaborative filtering."""
+        try:
+            logger.info("Loading prediction matrix...")
+            with open(settings.database.prediction_matrix_path, "rb") as f:
+                loaded_data = np.load(f, allow_pickle=True).item()
+
+            # Convert from dict to DataFrame
+            prediction_matrix = pd.DataFrame.from_dict(loaded_data["prediction_matrix"])
+            train_matrix = pd.DataFrame.from_dict(loaded_data["train_matrix"])
+
+            self._prediction_matrix = prediction_matrix
+            self._train_matrix = train_matrix
+
+            logger.info(
+                f"Loaded prediction matrix with shape {self._prediction_matrix.shape}"
+            )
+            logger.info(f"Loaded train matrix with shape {self._train_matrix.shape}")
+            logger.info("Collaborative filtering is now available")
+
+        except Exception as e:
+            logger.warning(f"Error loading prediction matrix: {e}")
+            logger.info("System will continue with content-based recommendations only")
+            self._prediction_matrix = None
+            self._train_matrix = None
+
     def get_product_by_id(self, product_id: int) -> Optional[pd.Series]:
         """Get product by ID."""
         try:
@@ -162,6 +204,8 @@ class DataService:
         self._vietnamese_embedding = None
         self._cosine_similarity_matrix = None
         self._product_indices = None
+        self._prediction_matrix = None
+        self._train_matrix = None
         logger.info("Data reload completed")
 
 

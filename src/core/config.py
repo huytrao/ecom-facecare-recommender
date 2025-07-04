@@ -24,6 +24,9 @@ class DatabaseConfig(BaseModel):
     vietnamese_embedding_path: str = os.getenv(
         "DATABASE__VIETNAMESE_EMBEDDING_PATH", "./embeddings/vietnamese_embedding.npy"
     )
+    prediction_matrix_path: str = os.getenv(
+        "DATABASE__PREDICTION_MATRIX_PATH", "./data/prediction_matrix.npy"
+    )
 
 
 class APIConfig(BaseModel):

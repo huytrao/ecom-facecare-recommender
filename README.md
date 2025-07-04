@@ -1,9 +1,55 @@
-# E-commerce Facecare Recommender 
+# E-commerce Facecare Recommender
 
 A Content-based recommendation system for facecare products in an e-commerce.
 
-## Project Structure
+📘 **This project is a course project of the "Recommendation System" class at HCMUS (University of Science, VNU-HCM), implemented by three undergraduate students.**  
+It focuses on applying modern embedding techniques and personalization strategies in the context of Vietnamese e-commerce.
 
+This project has outperformed the baseline from the paper [ViEcomRec: A Dataset for Recommendation in Vietnamese E-Commerce](https://doi.org/10.1007/978-981-97-0669-3_7) by using a combination of product information and an embedding-based model with user-based filtering.
+
+It leverages product descriptions, user reviews, and semantic embeddings to provide personalized recommendations for facecare products.
+
+We build a FastAPI application to serve recommendations and provide a user-friendly interface for e-commerce platforms.
+
+### 👥 Team Members
+
+| No. | Name                  | Student ID |
+| --- | --------------------- | ---------- |
+| 1   | Nguyen Cong Tien Dung | 22280014   |
+| 2   | Trao An Huy           | 22280041   |
+| 3   | Dinh Xuan Khang       | 22280042   |
+
+
+### Some technical highlights
+    - **FastAPI**: For building the API endpoints and backend logic.
+    - **Docker**: For containerization and deployment.
+    - **UI**: Using HTML and CSS templates for a simple web interface.
+
+### Pipeline
+![Pipeline](./static/pipeline_recsys.png)
+
+### System architecture
+![System Architecture](./static/RecSys_architecture.jpg)
+
+#### Performance:
+| Model                             | Recall\@10 | MRR\@10   | NDCG\@10  |
+| --------------------------------- | --------- | --------- | --------- |
+| Baseline (CB-Ada2+Popularity)  | 0.1644     | 0.0742    | 0.2721     |
+| AIVietnamese Embedding (AITeamVN) | 0.1940     | 0.0885     | 0.3232     |
+| **Our Improved Model**          | **0.0296** | **0.0143** | **0.0511** |
+
+# Demo
+---
+![](./static/hybrid_recommender_system.gif)
+
+# Embedding models
+---
+[![AITeamVN/Vietnamese_Embedding](https://img.shields.io/badge/AIVietNamese-embedding-blue?logo=ai)](https://huggingface.co/AITeamVN/Vietnamese_Embedding)
+
+[![BKAI-Foundation-Models/vietnamese-bi-encoder](https://img.shields.io/badge/Vietnamese-Bi--Encoder-green?logo=ai)](https://huggingface.co/bkai-foundation-models/vietnamese-bi-encoder)
+
+# Project Structure
+---
 ```
 ecom-facecare-recommender/
 │
@@ -51,45 +97,13 @@ ecom-facecare-recommender/
 └── README_RESTRUCTURED.md        # This file
 ```
 
-## Data
+# Data
+---
 You can find the datasets in Kaggle, link: [![Kaggle](https://img.shields.io/badge/Kaggle-Open%20in%20Kaggle-blue?logo=kaggle)](https://www.kaggle.com/datasets/danielway17/face-clean-ecomer)
 
-## Key Improvements
 
-### 1. Separation of Concerns
-- **Configuration**: Centralized in `src/core/config.py`
-- **Data Access**: Isolated in `src/services/data_service.py`
-- **Business Logic**: Separated in `src/services/recommendation_service.py`
-- **API Layer**: Clean routes in `src/api/routes.py`
-- **Models**: Type-safe schemas in `src/models/schemas.py`
-
-### 2. Error Handling
-- Custom exception classes in `src/utils/exceptions.py`
-- Centralized exception handling
-- Proper logging throughout the application
-
-### 3. Configuration Management
-- Environment-based configuration
-- Type-safe settings using Pydantic
-- Easy to modify for different environments
-
-### 4. Data Loading
-- Data is loaded only when needed
-- Singleton pattern for services
-- Better memory management
-
-### 5. Logging
-- Structured logging with Loguru
-- Multiple log levels and outputs
-- Rotation and retention policies
-
-### 6. Type Safety
-- Full type annotations
-- Pydantic models for data validation
-- Better IDE support and error catching
-
-## Quick Start
-
+# Quick Guide
+---
 ### 1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/ecom-facecare-recommender.git
@@ -114,14 +128,13 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### 5. API Documentation
+### 5. API
 Once running, visit:
 - Application: http://localhost:8000
 - API Documentation: http://localhost:8000/docs
-- Alternative API Docs: http://localhost:8000/redoc
 
-## Configuration
-
+# Configuration
+---
 The application can be configured through environment variables or the `.env` file:
 
 ```bash
@@ -137,24 +150,8 @@ DATABASE__COMBINED_PRODUCTS_PATH=./data/data_product_combine.csv
 # ...
 ```
 
-## Adding New Features
-
-### 1. Adding a New API Endpoint
-1. Define the route in `src/api/routes.py`
-2. Add any new data models to `src/models/schemas.py`
-
-### 2. Adding a New Recommendation Algorithm
-1. Add the algorithm to `src/services/recommendation_service.py`
-2. Update configuration in `src/core/config.py` if needed
-3. Add any new data dependencies to `src/services/data_service.py`
-
-### 3. Adding New Data Sources
-1. Extend `src/services/data_service.py` with new loading methods
-2. Update configuration paths in `src/core/config.py`
-3. Add new data models to `src/models/schemas.py`
-
-## Deployment
-
+# Deployment
+---
 ### Docker
 ```bash
 # Build image
@@ -163,4 +160,3 @@ docker build -t ecom-recommender .
 # Run container
 docker run -p 8000:8000 ecom-recommender
 ```
-
